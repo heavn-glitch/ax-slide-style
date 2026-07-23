@@ -1,0 +1,5 @@
+interface:
+  display_name: "AX Slide Style"
+  short_description: "AX Skillaton 스타일의 HTML 발표자료 생성"
+  brand_color: "#EBA8FF"
+  default_prompt: "Use $ax-slide-style to turn my content into a source-backed HTML slide deck."
