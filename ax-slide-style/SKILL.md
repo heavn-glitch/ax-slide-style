@@ -1,56 +1,90 @@
 ---
 name: ax-slide-style
-description: Use this skill when the user wants to create an HTML slide deck (presentation, 발표자료, 슬라이드) in the "AX Skillaton" editorial keynote style — a dark, Pretendard-based, full-screen scroll deck with an ember/pink accent, eyebrow-label → title-as-message structure, and one message per slide. Trigger when the user asks to build slides, a deck, or a presentation and wants this specific look, or references this style/template. Do not use for .pptx output, for spreadsheets, or for plain documents.
+description: Create HTML or PowerPoint (.pptx) slide decks in the "AX Skillaton" editorial keynote style: dark Pretendard typography, ember/pink accents, eyebrow label → title-as-message structure, and one message per slide. Use when the user asks for a presentation, 발표자료, 슬라이드, deck, HTML deck, PPT, or PowerPoint in this specific style. Honor an explicit HTML/PPTX choice; when the format is ambiguous, ask which output they want before building.
 ---
 
-# AX Slide Style — HTML 키노트 생성기
+# AX Slide Style
 
-이 스킬은 "AX Skillaton" 덱의 디자인과 논리 표현 방식을 그대로 재현하는 **단일 파일 HTML 슬라이드**를 만든다. 스크롤 스냅 방식의 풀스크린 슬라이드이며, 다크 테마 + Pretendard + 앰버(핑크) 액센트를 쓴다.
+AX Skillaton의 디자인과 논리 표현을 유지하면서 사용자가 선택한 형식으로 발표자료를 만든다.
 
-## 언제 켜지나
-- "이 스타일로 발표자료/슬라이드/덱 만들어줘", "AX Skillaton 스타일 슬라이드"
-- 다크 테마 편집형 키노트 HTML을 원할 때
+## 출력 형식 결정
 
-## 언제 안 켜지나
-- PowerPoint(.pptx), 스프레드시트, 일반 문서가 산출물일 때
-- 라이트/코퍼레이트 톤 등 다른 비주얼을 원할 때
+1. 사용자가 `HTML`, `.html`, 웹 공유를 명시하면 **HTML**로 만든다.
+2. 사용자가 `PPT`, `PowerPoint`, `.pptx`, 편집 가능한 파일을 명시하면 **PPTX**로 만든다.
+3. 형식이 불명확하면 제작 전에 “HTML과 PPTX 중 어떤 형식이 필요한가요?”라고 한 번만 묻는다.
+4. 두 형식을 모두 요청하면 먼저 공통 슬라이드 아웃라인을 확정하고 HTML과 PPTX를 각각 만든다.
 
-## 입력
-- 발표 주제와 목적, 대상 청중
-- 각 섹션의 핵심 메시지(장별 결론 한 줄씩)
-- (선택) 실제 프롬프트·표·비교 항목·출처
+## 공통 입력
 
-## 출력
-- 단일 `deck.html` 1개. 핵심 CSS는 인라인하고 Pretendard·lucide는 CDN에서 불러온다.
-- 완전한 오프라인 산출물이 필요하면 CDN 의존성을 로컬 폰트와 인라인 SVG로 바꾼다.
+- 발표 주제·목적·대상 청중
+- 각 슬라이드의 결론 한 문장
+- 선택 사항: 실제 프롬프트, 표, 비교 항목, 수치, 인용, 출처
 
-## Workflow
-1. **논리부터 잡는다.** 발표를 why → what → how → so-what 흐름으로 배열하고, 각 슬라이드의 **결론 한 문장**을 먼저 확정한다. (references/logic-rules.md)
-2. **장별 템플릿을 고른다.** 내용 유형에 맞춰 grid / mini-table / timeline / code-block / callout / divider 중 하나를 매핑한다. (references/components.md)
-3. **골격을 채운다.** 각 슬라이드는 `meta`(눈썹라벨) → `h2`(제목=메시지, 펀치라인만 `.accent`) → 본문 템플릿 → `source-line`/`slide-no` 순. 본문 포인트는 **한 문장**, 병렬 구조로.
-4. **배경 리듬을 넣는다.** bg-dark 기본, 도입·간지는 bg-hero, 전환은 bg-soft/bg-light. 논리 전환에 맞춰 배경을 바꾼다.
-5. **빌드.** CSS가 이미 인라인된 `assets/deck-template.html`을 복사해 예시 슬라이드를 실제 내용으로 교체한다. `assets/base.css`를 다시 삽입하지 않는다. 끝의 `lucide.createIcons()`는 유지한다.
-6. **검수.** 브라우저로 렌더해 (a) 한 장에 메시지 하나인지, (b) 제목만 읽어도 논지가 서는지, (c) 출처·페이지번호가 있는지, (d) 1280×720에서 잘림·겹침이 없는지 확인한다. PDF가 필요하면 인쇄 미리보기에서 한 장당 한 페이지인지 확인한다.
+## 공통 논리 Workflow
 
-## 디자인 토큰 (요약; 전체는 references/design-tokens.md)
-- 색: `--ink #0a0908`(배경) · `--bone #f0ede5`(제목) · `--bone-dim #c9c5bc`(본문) · `--bone-mute #7a766e`(라벨/출처) · `--ember #eba8ff`(액센트)
-- 폰트: Pretendard Variable, 코드 ui-monospace, `word-break:keep-all`
-- 스케일: h2 제목 `clamp(56–92px)`/650, 본문 26px, 눈썹라벨 19px·대문자·자간 0.08em
-- 프레임: 슬라이드 100vw×100vh, `--safe-w 1760px`, 좌하단 출처·우하단 번호
+1. 발표를 `why → what → how → so-what`으로 배열한다.
+2. 각 슬라이드의 결론 한 문장을 먼저 확정한다.
+3. 내용 유형을 hero / divider / grid / table / timeline / code / callout 중 하나에 매핑한다.
+4. `eyebrow → title(결론) → 본문 → source/page` 골격을 유지한다.
+5. 본문 포인트를 한 문장으로 쓰고 병렬 구조를 맞춘다.
+6. 외부 사실·수치·인용에 `Source:`를 붙인다.
+7. 제목에서 펀치라인 한 곳만 앰버로 강조한다.
 
-## 핵심 논리 규칙 (전체는 references/logic-rules.md)
-1. 1페이지 1메시지 2. 제목 = 결론 3. 펀치라인만 액센트(장당 1회)
-4. 눈썹라벨은 위치표식(메시지 아님) 5. 본문 한 문장·병렬 6. 모든 인용에 Source
-7. 흐름 why→what→how→so-what, 섹션 사이 간지 슬라이드
+상세 논리와 컴포넌트는 `references/logic-rules.md`, `references/components.md`를 읽는다.
+
+## HTML 경로
+
+1. `assets/deck-template.html`을 복사한다.
+2. 예시 슬라이드를 실제 내용으로 교체한다.
+3. 이미 인라인된 CSS를 유지하고 `assets/base.css`를 다시 삽입하지 않는다.
+4. 끝의 `lucide.createIcons()`를 유지한다.
+5. 단일 `deck.html`로 저장한다.
+6. 브라우저에서 1280×720 기준 잘림·겹침·줄바꿈과 스크롤 스냅을 확인한다.
+7. PDF가 필요하면 인쇄 미리보기에서 슬라이드당 한 페이지인지 확인한다.
+
+Pretendard와 lucide는 CDN을 사용한다. 완전한 오프라인 산출물이 필요하면 로컬 폰트와 인라인 SVG로 교체한다.
+
+## PPTX 경로
+
+1. 현재 환경의 `Presentations` 스킬을 함께 사용하고 해당 지침을 끝까지 따른다.
+2. 구현은 `Presentations` 스킬이 지정한 `@oai/artifact-tool` JavaScript 경로를 사용한다.
+3. 이 스킬의 비주얼 방향을 명시적 사용자 스타일로 취급하고 다른 기본 템플릿과 섞지 않는다.
+4. `references/pptx-style.md`의 16:9 레이아웃, 색, 타이포, 아키타입 규격을 적용한다.
+5. 편집 가능한 도형·텍스트·표를 유지하고 최종 파일을 `deck.pptx`로 저장한다.
+6. `Presentations` 스킬의 렌더링·오버플로 검사를 실행하고 모든 슬라이드를 이미지로 확인한다.
+7. Pretendard가 없을 때의 대체 폰트 렌더링을 확인하되, 텍스트가 잘리면 문장을 줄이거나 레이아웃을 바꾼다.
+
+`pptxgenjs`나 별도 PPTX 생성 라이브러리를 추가하지 않는다.
+
+## 배경 리듬
+
+- 기본 본문: dark
+- 도입·섹션 간지: hero
+- 전환·강조: soft 또는 light
+- 기계적인 교차 대신 논리 전환에 맞춰 배경을 바꾼다.
+
+## 공통 QA
+
+- 한 슬라이드에 메시지가 하나인가?
+- 제목만 읽어도 전체 논지가 이어지는가?
+- 본문이 포인트당 한 문장인가?
+- 강조가 슬라이드당 한 곳인가?
+- 수치·인용에 출처가 있는가?
+- 페이지 번호와 출처가 잘리지 않는가?
+- 제목·본문·표에 겹침이나 의도하지 않은 줄바꿈이 없는가?
 
 ## Stop Conditions
-- 장별 핵심 메시지가 정해지지 않았으면 추측하지 말고 사용자에게 확인한다.
-- 실제 수치·인용의 출처가 없으면 지어내지 말고 "확인 필요"로 표시한다.
-- 다른 비주얼 톤을 원하면 이 스킬을 쓰지 않는다.
+
+- 출력 형식이 불명확하면 제작 전에 확인한다.
+- 슬라이드별 핵심 메시지가 없으면 임의로 확정하지 말고 확인한다.
+- 실제 수치·인용의 출처가 없으면 지어내지 말고 `확인 필요`로 표시한다.
+- 사용자가 다른 비주얼 톤을 원하면 이 스킬을 적용하지 않는다.
 
 ## Files
-- `assets/base.css` — 재현용 핵심 스타일 시스템
-- `assets/deck-template.html` — 6가지 슬라이드 유형 예시가 든 자립형 템플릿
-- `references/design-tokens.md` — 색·폰트·스케일·컴포넌트 상세
-- `references/logic-rules.md` — 논리 전개·표현 규칙, 콘텐츠→템플릿 매핑
-- `references/components.md` — 컴포넌트별 HTML 스니펫
+
+- `assets/base.css` — HTML 핵심 스타일
+- `assets/deck-template.html` — HTML 슬라이드 템플릿
+- `references/design-tokens.md` — HTML 색·폰트·스케일
+- `references/logic-rules.md` — 공통 논리 전개 규칙
+- `references/components.md` — HTML 컴포넌트 스니펫
+- `references/pptx-style.md` — PPTX 스타일·레이아웃·아키타입 규격
