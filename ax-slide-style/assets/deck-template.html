@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck Title</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+/* AX Skillaton deck style — base system (reusable subset) */
+:root{
+  --ink:#0a0908; --ink-soft:#15130f; --ink-rise:#1f1c16;
+  --bone:#f0ede5; --bone-dim:#c9c5bc; --bone-mute:#7a766e; --card-bone:#e6dfd3;
+  --ember:#eba8ff; --ember-deep:#c873e0; --cyan-glow:#00c2ff;
+  --safe-w:min(100%,1760px);
+}
+*{box-sizing:border-box}
+html{scroll-snap-type:y mandatory}
+html,body{margin:0;background:var(--ink);color:var(--bone);
+  font-family:"Pretendard Variable","Pretendard",system-ui,sans-serif;
+  word-break:keep-all;overflow-wrap:normal;line-break:strict;
+  -webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p{margin:0}
+
+/* ---- slide frame ---- */
+.deck{background:var(--ink)}
+.slide{position:relative;width:100vw;min-height:100vh;padding:34px 56px;
+  overflow:hidden;display:flex;align-items:flex-start;scroll-snap-align:start}
+.slide-inner{position:relative;width:var(--safe-w);margin:clamp(72px,8vh,96px) auto 0;z-index:2}
+.slide-no{position:absolute;right:34px;bottom:26px;z-index:3;color:var(--bone-mute);
+  font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.source-line{position:absolute;left:66px;bottom:46px;z-index:3;color:var(--bone-mute);
+  font-size:17px;line-height:1.45}
+
+/* ---- backgrounds (alternate dark/light for rhythm) ---- */
+.bg-dark{background:linear-gradient(135deg,var(--ink) 0%,var(--ink-soft) 100%)}
+.bg-soft{background:radial-gradient(circle at 92% 8%,rgba(235,168,255,.16),transparent 34%),
+  linear-gradient(135deg,var(--ink-soft),var(--ink))}
+.bg-hero{background:radial-gradient(circle at 24% 18%,rgba(235,168,255,.28),transparent 36%),
+  radial-gradient(circle at 72% 12%,rgba(200,115,224,.18),transparent 34%),
+  linear-gradient(135deg,#15130f 0%,#0a0908 52%,#1f1c16 100%)}
+.bg-light{background:radial-gradient(circle at 85% 0%,rgba(200,115,224,.16),transparent 42%),var(--bone);
+  color:var(--ink)}
+.bg-light .slide-no{color:rgba(10,9,8,.48)}
+.bg-light .source-line{color:rgba(10,9,8,.5)}
+.dot-texture::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(235,168,255,.05) 1px,transparent 1px);
+  background-size:4px 4px;z-index:1}
+
+/* ---- type scale ---- */
+h1{max-width:var(--safe-w);font-size:clamp(74px,8.4vw,136px);line-height:1.02;font-weight:650}
+h2{max-width:var(--safe-w);font-size:clamp(56px,5.8vw,92px);line-height:1.08;font-weight:650}
+h2.wide-title{max-width:var(--safe-w)}
+h3{font-size:35px;line-height:1.22;font-weight:650}
+.meta{color:var(--bone-mute);font-size:19px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.lead{max-width:980px;margin-top:28px;font-size:32px;line-height:1.52;font-weight:450;color:var(--bone-dim)}
+.footnote{margin-top:26px;font-size:21px;color:var(--bone-mute);line-height:1.55}
+.accent{color:var(--ember)}
+.muted{color:var(--bone-dim)}
+
+/* ---- concept card grids ---- */
+.grid-2,.grid-3,.grid-4{display:grid;gap:1px;background:var(--ink-rise);border:1px solid var(--ink-rise)}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cell{min-height:196px;padding:34px;background:var(--ink)}
+.cell p{margin-top:14px;color:var(--bone-dim);font-size:26px;line-height:1.45}
+.bg-light .cell{background:var(--card-bone)}
+.bg-light .cell p{color:#514d46}
+.icon-box{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;
+  color:var(--ember);background:rgba(235,168,255,.05);border:1px solid rgba(235,168,255,.25)}
+.icon-box + h3{margin-top:22px}
+
+/* ---- comparison table ---- */
+.mini-table{display:grid;border:1px solid rgba(240,237,229,.14);background:rgba(240,237,229,.14);gap:1px;margin-top:40px}
+.mini-table.row-3{grid-template-columns:.72fr 1.1fr 1.1fr}
+.mini-table.row-4{grid-template-columns:.75fr 1.1fr 1.1fr 1.1fr}
+.mini-table > div{min-height:92px;padding:22px 24px;background:var(--ink);font-size:26px;line-height:1.42;color:var(--bone-dim)}
+.mini-table .head{color:var(--bone);font-weight:800;background:var(--ink-soft)}
+
+/* ---- numbered steps / timeline ---- */
+.timeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;
+  background:var(--ink-rise);border:1px solid var(--ink-rise);margin-top:48px}
+.timeline-step{min-height:286px;background:var(--ink);padding:32px;display:flex;flex-direction:column;justify-content:space-between}
+.timeline-step .meta{color:var(--ember)}
+
+/* ---- prompt / code block ---- */
+.code-block{margin-top:34px;padding:32px 34px;border:1px solid rgba(235,168,255,.25);
+  background:rgba(10,9,8,.62);color:var(--bone);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:27px;line-height:1.5;white-space:pre-wrap}
+.code-block.compact{font-size:19px;line-height:1.42;padding:24px 28px}
+.prompt-label{display:block;margin-bottom:12px;color:var(--ember);font-size:18px;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase}
+
+/* ---- callout (the one "중요" takeaway) ---- */
+.callout{border:1px solid rgba(235,168,255,.25);background:rgba(235,168,255,.05);padding:42px;margin-top:34px}
+.callout p{font-size:34px;line-height:1.44;font-weight:550}
+
+/* ---- big single-word divider ---- */
+.quote{max-width:1260px;font-size:clamp(58px,6.4vw,104px);line-height:1.08;font-weight:650}
+.center-stage{display:grid;min-height:calc(100vh - 68px);place-items:center;text-align:center}
+
+/* ---- two column ---- */
+.two-col{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:34px;align-items:center}
+
+@media (max-width:980px){
+  .grid-2,.grid-3,.grid-4,.timeline,.two-col{grid-template-columns:1fr}
+  .mini-table.row-3,.mini-table.row-4{grid-template-columns:1fr}
+  .lead,.cell p{font-size:20px}
+  .source-line{left:24px;right:24px}
+  .slide-no{right:24px}
+}
+
+@media print{
+  @page{size:16in 9in;margin:0}
+  html,body{width:16in;background:#fff;scroll-snap-type:none}
+  .slide{width:16in;height:9in;min-height:0;break-after:page;page-break-after:always}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1. HERO — big title, centered, bg-hero -->
+  <section class="slide bg-hero dot-texture" id="slide-1" style="align-items:center">
+    <div class="slide-inner" style="margin:0 auto;text-align:center">
+      <p class="meta">AX Skillaton · Day1 Company</p>
+      <h1 style="margin-top:24px">덱 제목 <span class="accent">핵심 강조</span></h1>
+      <p class="lead" style="margin-left:auto;margin-right:auto">한 문장으로 요약한 이 발표의 약속.</p>
+    </div>
+    <div class="slide-no">1</div>
+  </section>
+
+  <!-- 2. CONCEPT GRID — eyebrow + title(accent) + 3 cards (icon + h3 + one sentence) -->
+  <section class="slide bg-soft dot-texture" id="slide-2">
+    <div class="slide-inner">
+      <p class="meta">Why This</p>
+      <h2 class="wide-title">한 장의 핵심 메시지: <span class="accent">여기서 강조</span></h2>
+      <div class="grid-3" style="margin-top:54px">
+        <div class="cell">
+          <span class="icon-box"><i data-lucide="repeat"></i></span>
+          <h3>포인트 하나</h3>
+          <p>포인트당 한 문장. 문단 금지, 병렬 구조 유지.</p>
+        </div>
+        <div class="cell">
+          <span class="icon-box"><i data-lucide="alert-triangle"></i></span>
+          <h3>포인트 둘</h3>
+          <p>같은 문법 구조로 리듬을 만든다.</p>
+        </div>
+        <div class="cell">
+          <span class="icon-box"><i data-lucide="layers"></i></span>
+          <h3>포인트 셋</h3>
+          <p>세 개면 grid-3, 네 개면 grid-4.</p>
+        </div>
+      </div>
+    </div>
+    <div class="source-line">Source: 출처를 여기에</div>
+    <div class="slide-no">2</div>
+  </section>
+
+  <!-- 3. COMPARISON TABLE — mini-table, first row = .head -->
+  <section class="slide bg-dark dot-texture" id="slide-3">
+    <div class="slide-inner">
+      <p class="meta">Compare</p>
+      <h2>둘을 나란히 비교</h2>
+      <div class="mini-table row-3">
+        <div class="head">구분</div><div class="head">A안</div><div class="head">B안</div>
+        <div class="head">기준 1</div><div>값</div><div>값</div>
+        <div class="head">기준 2</div><div>값</div><div>값</div>
+      </div>
+    </div>
+    <div class="slide-no">3</div>
+  </section>
+
+  <!-- 4. NUMBERED STEPS — timeline (5 steps) -->
+  <section class="slide bg-soft dot-texture" id="slide-4">
+    <div class="slide-inner">
+      <p class="meta">Method</p>
+      <h2>다섯 단계로 실행</h2>
+      <div class="timeline">
+        <div class="timeline-step"><p class="meta">01</p><div><h3>고르기</h3><p>한 문장 설명.</p></div></div>
+        <div class="timeline-step"><p class="meta">02</p><div><h3>해보기</h3><p>한 문장 설명.</p></div></div>
+        <div class="timeline-step"><p class="meta">03</p><div><h3>적기</h3><p>한 문장 설명.</p></div></div>
+        <div class="timeline-step"><p class="meta">04</p><div><h3>테스트</h3><p>한 문장 설명.</p></div></div>
+        <div class="timeline-step"><p class="meta">05</p><div><h3>공유</h3><p>한 문장 설명.</p></div></div>
+      </div>
+    </div>
+    <div class="slide-no">4</div>
+  </section>
+
+  <!-- 5. PROMPT/CODE + CALLOUT -->
+  <section class="slide bg-dark dot-texture" id="slide-5">
+    <div class="slide-inner">
+      <p class="meta">Prompt</p>
+      <h2>실제 프롬프트를 원문 그대로</h2>
+      <div class="code-block"><span class="prompt-label">Prompt · 결과 만들기</span>이 파일을 읽고, 한국어 초안을 1건씩 만들어줘.
+조건: 발송하지 말고 draft만. 근거 row 번호를 남겨줘.</div>
+      <div class="callout"><p><strong>중요:</strong> 오늘은 가장 작은 배포 단위 하나만 완성한다.</p></div>
+    </div>
+    <div class="slide-no">5</div>
+  </section>
+
+  <!-- 6. DIVIDER — one big word, centered -->
+  <section class="slide bg-hero dot-texture" id="slide-6">
+    <div class="center-stage">
+      <div>
+        <p class="meta">되뇌어야 할 단어</p>
+        <p class="quote">unlearn <span class="accent">open-mind</span></p>
+      </div>
+    </div>
+    <div class="slide-no">6</div>
+  </section>
+
+</div>
+<script>
+  // inline base.css into <style> at build time, then:
+  if (window.lucide) lucide.createIcons();
+</script>
+</body></html>
